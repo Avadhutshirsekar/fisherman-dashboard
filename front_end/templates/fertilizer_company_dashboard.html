@@ -23,10 +23,11 @@
     <!-- Main content -->
     <section class="content">
       <!-- Blocks for each fish -->
-      {% for fish in fish_list %}
+     
       <div class="card card-solid">
         <div class="card-body pb-0">
           <div class="row">
+            {% for fish in fish_list %}
             <div class="col-10 col-sm-5 col-md-4 d-flex align-items-stretch flex-column">
               <div class="card bg-light d-flex flex-fill">
                 <div class="card-header text-muted border-bottom-0">
@@ -58,16 +59,55 @@
                 </div>
               </div>
             </div>
+            {% endfor %}
           </div>
         </div>
       </div>
-      {% endfor %}
+      
     </section>
 
+
+    <style>
+      .cart-item {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 10px;
+        border-bottom: 1px solid #ddd; /* Optional: For better separation of items */
+    }
+    
+    .item-info {
+        flex: 2; /* Adjust the flex value to control the space taken by the item details */
+        padding-right: 20px; /* Add space after the item details */
+    }
+    
+    .item-quantity-controls {
+        display: flex;
+        align-items: center;
+        flex: 1; /* Adjust as necessary */
+    }
+    
+    .item-quantity-controls input {
+        width: 50px; /* Set a fixed width for the quantity input */
+        text-align: center; /* Center the quantity value */
+        margin: 0 10px; /* Add space around the input */
+    }
+    
+    .item-price {
+        flex: 1;
+        text-align: right;
+        padding-left: 20px; /* Add space before the price */
+    }
+    
+    .remove-item {
+        margin-left: 20px; /* Add space before the Remove button */
+    }
+    
+    </style>
     <!-- Cart Summary Section -->
     <section class="content">
-      <div class="card card-solid">
-        <div class="card-body">
+      <div class="card card-solid" style="max-width: 700px; margin: 0 auto;">
+        <div class="card-body" >
           <h3>Your Cart</h3>
           <ul id="cartItems" class="list-group mb-3">
             <!-- Cart items will be dynamically added here -->
@@ -78,8 +118,8 @@
     </section>
 
     <!-- Modal Structure -->
-    <div class="modal fade" id="cartModal" tabindex="-1" role="dialog" aria-labelledby="cartModalLabel" aria-hidden="true">
-      <div class="modal-dialog" role="document">
+    <div class="modal fade" id="cartModal" tabindex="-1" role="dialog" aria-labelledby="cartModalLabel" aria-hidden="true" >
+      <div class="modal-dialog" role="document" style="max-width:700px; margin: 0 auto;">
         <div class="modal-content">
           <div class="modal-header">
             <h5 class="modal-title" id="cartModalLabel">Order Summary</h5>
@@ -134,7 +174,10 @@
                 });
                 modalCartItems.appendChild(clonedItem);
 
+                
+        
                 const itemQuantity = parseInt(item.getAttribute('data-quantity'));
+        
                 const itemPrice = parseFloat(item.getAttribute('data-price'));
                 totalQuantity += itemQuantity;
                 totalPrice += itemPrice;
@@ -160,12 +203,16 @@
         function updateQuantity(name, change) {
             Array.from(cartItems.children).forEach(item => {
                 if (item.getAttribute('data-name') === name) {
+                
                     const quantityInput = item.querySelector('.item-quantity');
                     const maxQuantity = parseInt(item.getAttribute('data-max-quantity'));
                     let newQuantity = parseInt(quantityInput.value) + change;
                     
                     if (newQuantity < 1) newQuantity = 1; // Minimum quantity is 1
                     if (newQuantity > maxQuantity) newQuantity = maxQuantity; // Limit quantity to maxQuantity
+
+                    quantityInput.style.width = '40px'; // Adjust the width as per your requirement
+                    quantityInput.style.textAlign = 'center'; 
 
                     quantityInput.value = newQuantity;
                     const itemPricePerUnit = parseFloat(item.getAttribute('data-price-per-unit'));
@@ -192,12 +239,26 @@
                 const listItem = document.createElement('li');
                 listItem.className = 'list-group-item';
                 listItem.innerHTML = `
-                    ${name} from ${location} - 
-                    <button class="quantity-minus btn btn-sm btn-outline-secondary">-</button>
-                    <input type="text" class="item-quantity" value="${quantity}" readonly>
-                    <button class="quantity-plus btn btn-sm btn-outline-secondary">+</button>
-                    at <span class="item-price">$${price.toFixed(2)}</span>
-                    <button class="btn btn-danger btn-sm float-right remove-item">Remove</button>`;
+                    <div class="cart-item d-flex justify-content-between align-items-center">
+        <div class="item-info">
+            ${name} from ${location}
+        </div>
+        <div class="item-quantity-controls d-flex align-items-center">
+            <button class="quantity-minus btn btn-sm btn-outline-secondary">-</button>
+            <input type="text" class="item-quantity" value="${quantity}" readonly>
+            <button class="quantity-plus btn btn-sm btn-outline-secondary">+</button>
+        </div>
+        <div class="item-price">
+            $<span>${price.toFixed(2)}</span>
+        </div>
+        <button class="btn btn-danger btn-sm remove-item">Remove</button>
+    </div>
+`;
+                  
+                listItem.querySelector('.item-quantity').style.width = '40px';
+                listItem.querySelector('.item-price').style.width = '60px';
+               
+                    
                 
                 listItem.setAttribute('data-name', name);
                 listItem.setAttribute('data-quantity', quantity);
