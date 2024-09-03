@@ -1,0 +1,211 @@
+
+{% extends 'driver_layout.html' %}
+
+{% block body %}
+<!-- Content Wrapper. Contains page content -->
+<div class="content-wrapper">
+    <!-- Content Header (Page header) -->
+    <section class="content-header">
+        <div class="container-fluid">
+            <div class="row mb-2">
+                <div class="col-sm-6">
+                    <h1>Place Your Order</h1>
+                </div>
+                <div class="col-sm-6">
+                    <ol class="breadcrumb float-sm-right">
+                        <li class="breadcrumb-item"><a href="#">Home</a></li>
+                        <li class="breadcrumb-item active">Orders</li>
+                    </ol>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Main content -->
+    <section class="content">
+        {% for order in order_list %}
+        <div class="card card-solid">
+            <div class="card-body pb-0">
+                <div class="row">
+                    <div class="col-10 col-sm-5 col-md-4 d-flex align-items-stretch flex-column">
+                        <div class="card bg-light d-flex flex-fill">
+                            <div class="card-header text-muted border-bottom-0">
+                                Pickup Address - {{ order.pickup_address }}
+                            </div>
+                            <div class="card-body pt-0">
+                                <div class="row">
+                                    <div class="col-12">
+                                        <h2 class="lead"><b>Drop Address - {{ order.drop_address }}</b></h2>
+                                        <p class="text-muted text-sm"><b>About: </b> {{ order.about }}</p>
+                                        <ul class="ml-4 mb-0 fa-ul text-muted">
+                                            <li class="small"><span class="fa-li"><i class="fas fa-lg fa-phone"></i></span> Phone #: {{ order.phone }}</li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="card-footer">
+                                <div class="text-middle">
+                                    <button type="button" class="btn btn-sm btn-primary" onclick="showPasswordPopup()">
+                                        Confirm
+                                    </button>
+                                </div>
+                                <!-- Added phone number below the Confirm button -->
+                                <div class="mt-2">
+                                    <span><b>Phone #: </b>{{ order.phone }}</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </section>
+
+    <!-- Password Modal Structure -->
+    <div class="modal fade" id="passwordModal" tabindex="-1" role="dialog" aria-labelledby="passwordModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="passwordModalLabel">Enter Password</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <input type="password" id="passwordInput" class="form-control" placeholder="Enter Password">
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                    <button type="button" class="btn btn-primary" onclick="confirmPassword()">Confirm</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Pickup Code Modal Structure -->
+    <div class="modal fade" id="pickupCodeModal" tabindex="-1" role="dialog" aria-labelledby="pickupCodeModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="pickupCodeModalLabel">Enter Pickup Code</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <input type="text" id="pickupCodeInput" class="form-control" placeholder="Enter Pickup Code">
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                    <button type="button" class="btn btn-success" onclick="confirmPickup()">Enter</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Drop Code Modal Structure -->
+    <div class="modal fade" id="dropCodeModal" tabindex="-1" role="dialog" aria-labelledby="dropCodeModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="dropCodeModalLabel">Enter Drop Code</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <input type="text" id="dropCodeInput" class="form-control" placeholder="Enter Drop Code">
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                    <button type="button" class="btn btn-success" onclick="confirmDrop()">Enter</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<script>
+    function showPasswordPopup() {
+        $('#passwordModal').modal('show');
+    }
+
+    function confirmPassword() {
+        const password = document.getElementById('passwordInput').value;
+        if (password === 'sustainable') {
+            $('#passwordModal').modal('hide');
+            createButton('Pickup Done', showPickupCodePopup);
+        } else {
+            alert('Incorrect password');
+        }
+    }
+
+    function showPickupCodePopup() {
+        $('#pickupCodeModal').modal('show');
+    }
+
+    function confirmPickup() {
+        const pickupCode = document.getElementById('pickupCodeInput').value;
+        if (pickupCode === 'pick123') {
+            $('#pickupCodeModal').modal('hide');
+            updateButton('Done', 'green');
+            createButton('Drop Done', showDropCodePopup);
+        } else {
+            alert('Incorrect Pickup Code');
+        }
+    }
+
+    function showDropCodePopup() {
+        $('#dropCodeModal').modal('show');
+    }
+
+    function confirmDrop() {
+        const dropCode = document.getElementById('dropCodeInput').value;
+        if (dropCode === 'drop123') {
+            $('#dropCodeModal').modal('hide');
+            updateButton('Delivery Done', 'green');
+            showToast('Delivery Completed');
+        } else {
+            alert('Incorrect Drop Code');
+        }
+    }
+
+    function createButton(text, onClickAction) {
+        const btn = document.createElement('button');
+        btn.className = 'btn btn-primary';
+        btn.textContent = text;
+        btn.onclick = onClickAction;
+        document.querySelector('.text-middle').appendChild(btn);
+    }
+
+    function updateButton(text, color) {
+        const btn = document.querySelector('.text-middle button');
+        btn.textContent = text;
+        btn.style.backgroundColor = color;
+    }
+
+    function showToast(message) {
+        const toast = document.createElement('div');
+        toast.className = 'toast';
+        toast.innerText = message;
+        document.body.appendChild(toast);
+        setTimeout(() => {
+            toast.remove();
+        }, 3000);
+    }
+    function confirmPassword() {
+    const password = document.getElementById('passwordInput').value;
+    if (password === 'sustainable') {
+        window.location.href = "{% url 'pickup_drop' %}";
+    } else {
+        alert('Incorrect password');
+    }
+}
+
+</script>
+
+
+
+{% endblock  %}

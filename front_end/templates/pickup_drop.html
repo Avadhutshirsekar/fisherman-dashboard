@@ -1,0 +1,159 @@
+{% extends 'driver_layout.html' %}
+
+{% block body %}
+<div class="content-wrapper">
+    <section class="content-header">
+        <div class="container-fluid">
+            <div class="row mb-2">
+                <div class="col-sm-6">
+                    <h1>Order Processing</h1>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="content">
+        <div class="card card-solid">
+            <div class="card-body pb-0">
+                <div class="row justify-content-center"> <!-- Centering the content -->
+                    <div class="col-12 col-sm-10 col-md-8 d-flex align-items-stretch flex-column">
+                        <div class="card bg-light d-flex flex-fill">
+                            <div class="card-header text-muted border-bottom-0">
+                                Pickup and Drop Process
+                            </div>
+                            <div class="card-body pt-0">
+                                <div class="row">
+                                    <div class="col-12 text-center"> <!-- Centering the text -->
+                                        <h2 class="lead"><b>Pickup and Drop Operations</b></h2>
+                                        <p class="text-muted text-sm"><b>Instructions:</b> Complete the pickup and drop steps below.</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="card-footer text-center"> <!-- Centering the buttons -->
+                                <div id="buttonContainer" class="d-flex flex-column align-items-center"> <!-- Container for the buttons -->
+                                    <button type="button" class="btn btn-sm btn-primary mb-3" id="pickupButton" onclick="showPickupCodePopup()">
+                                        Pickup Done
+                                    </button>
+                                    <!-- Drop button will be dynamically added here -->
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Modals for Pickup Code and Drop Code -->
+    <div class="modal fade" id="pickupCodeModal" tabindex="-1" role="dialog" aria-labelledby="pickupCodeModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="pickupCodeModalLabel">Enter Pickup Code</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <input type="text" id="pickupCodeInput" class="form-control" placeholder="Enter Pickup Code">
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                    <button type="button" class="btn btn-success" onclick="confirmPickup()">Enter</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="dropCodeModal" tabindex="-1" role="dialog" aria-labelledby="dropCodeModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="dropCodeModalLabel">Enter Drop Code</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <input type="text" id="dropCodeInput" class="form-control" placeholder="Enter Drop Code">
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                    <button type="button" class="btn btn-success" onclick="confirmDrop()">Enter</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<script>
+    function showPickupCodePopup() {
+        $('#pickupCodeModal').modal('show');
+    }
+
+    function confirmPickup() {
+        const pickupCode = document.getElementById('pickupCodeInput').value;
+        if (pickupCode === 'pick123') {
+            $('#pickupCodeModal').modal('hide');
+            const pickupButton = document.getElementById('pickupButton');
+            pickupButton.textContent = 'Done';
+            pickupButton.style.backgroundColor = 'green';
+            pickupButton.disabled = true;
+
+            createDropButton();
+        } else {
+            alert('Incorrect Pickup Code');
+        }
+    }
+
+    function createDropButton() {
+        const spacer = document.createElement('div');
+        spacer.style.height = '20px';  // Add space between the buttons
+        document.getElementById('buttonContainer').appendChild(spacer);
+
+        const btn = document.createElement('button');
+        btn.className = 'btn btn-primary mt-3';
+        btn.textContent = 'Drop Done';
+        btn.id = 'dropButton';
+        btn.style.marginTop = '20px';  // Additional margin for spacing
+        btn.onclick = showDropCodePopup;
+        document.getElementById('buttonContainer').appendChild(btn); // Add drop button below the pickup button
+    }
+
+    function showDropCodePopup() {
+        $('#dropCodeModal').modal('show');
+    }
+
+    function confirmDrop() {
+        const dropCode = document.getElementById('dropCodeInput').value;
+        if (dropCode === 'drop123') {
+            $('#dropCodeModal').modal('hide');
+            const dropButton = document.getElementById('dropButton');
+            dropButton.textContent = 'Delivery Done';
+            dropButton.style.backgroundColor = 'green';
+            dropButton.disabled = true;
+            showToast('Delivery Completed Successfully');
+        } else {
+            alert('Incorrect Drop Code');
+        }
+    }
+
+    function showToast(message) {
+        const toast = document.createElement('div');
+        toast.className = 'toast';
+        toast.innerText = message;
+        toast.style.position = 'fixed';
+        toast.style.bottom = '20px';
+        toast.style.right = '20px';
+        toast.style.padding = '10px';
+        toast.style.backgroundColor = '#28a745';
+        toast.style.color = '#fff';
+        toast.style.borderRadius = '5px';
+        document.body.appendChild(toast);
+        setTimeout(() => {
+            toast.remove();
+        }, 3000);
+    }
+</script>
+{% endblock %}
